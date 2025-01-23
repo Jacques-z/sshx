@@ -27,6 +27,10 @@ struct Args {
     #[clap(long)]
     name: Option<String>,
 
+    /// Sub path to use
+    #[clap(long, default_value = "")]
+    addr: String,
+
     /// Enable read-only access mode - generates separate URLs for viewers and
     /// editors.
     #[clap(long)]
@@ -90,7 +94,8 @@ async fn start(args: Args) -> Result<()> {
     });
 
     let runner = Runner::Shell(shell.clone());
-    let mut controller = Controller::new(&args.server, &name, runner, args.enable_readers).await?;
+    let mut controller =
+        Controller::new(&args.server, &name, &args.addr, runner, args.enable_readers).await?;
     if args.quiet {
         if let Some(write_url) = controller.write_url() {
             println!("{}", write_url);
