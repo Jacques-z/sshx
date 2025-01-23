@@ -27,6 +27,10 @@ struct Args {
     #[clap(long)]
     name: Option<String>,
 
+    /// Sub path to use
+    #[clap(long, default_value = "")]
+    addr: String,
+
     /// Enable everyone to run arbitrary commands.
     #[clap(long)]
     no_write_protection: bool,
@@ -89,7 +93,14 @@ async fn start(args: Args) -> Result<()> {
     });
 
     let runner = Runner::Shell(shell.clone());
-    let mut controller = Controller::new(&args.server, &name, runner, !args.no_write_protection).await?;
+    let mut controller = Controller::new(
+        &args.server,
+        &name,
+        &args.addr,
+        runner,
+        !args.no_write_protection,
+    )
+    .await?;
     if args.quiet {
         if let Some(write_url) = controller.write_url() {
             println!("{}", write_url);

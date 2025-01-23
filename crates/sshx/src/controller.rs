@@ -50,6 +50,7 @@ impl Controller {
     pub async fn new(
         origin: &str,
         name: &str,
+        addr: &str,
         runner: Runner,
         write_protection: bool,
     ) -> Result<Self> {
@@ -84,6 +85,7 @@ impl Controller {
             origin: origin.into(),
             encrypted_zeros: encrypt.zeros().into(),
             name: name.into(),
+            addr: addr.into(),
             write_password_hash,
         };
         let mut resp = client.open(req).await?.into_inner();
