@@ -239,7 +239,7 @@ async fn test_read_write_permissions() -> Result<()> {
     let key = controller.encryption_key().to_owned();
     let write_url = controller
         .write_url()
-        .expect("Should have write URL when enable_readers is true")
+        .expect("Should have write URL when everyone_write is not set")
         .to_string();
 
     tokio::spawn(async move { controller.run().await });

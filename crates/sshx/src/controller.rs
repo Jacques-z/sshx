@@ -51,7 +51,7 @@ impl Controller {
         origin: &str,
         name: &str,
         runner: Runner,
-        enable_readers: bool,
+        write_protection: bool,
     ) -> Result<Self> {
         debug!(%origin, "connecting to server");
         let encryption_key = rand_alphanumeric(14); // 83.3 bits of entropy
@@ -61,7 +61,7 @@ impl Controller {
             task::spawn_blocking(move || Encrypt::new(&encryption_key))
         };
 
-        let (write_password, kdf_write_password_task) = if enable_readers {
+        let (write_password, kdf_write_password_task) = if write_protection {
             let write_password = rand_alphanumeric(14); // 83.3 bits of entropy
             let task = {
                 let write_password = write_password.clone();

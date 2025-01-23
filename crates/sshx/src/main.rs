@@ -27,10 +27,9 @@ struct Args {
     #[clap(long)]
     name: Option<String>,
 
-    /// Enable read-only access mode - generates separate URLs for viewers and
-    /// editors.
+    /// Enable everyone to run arbitrary commands.
     #[clap(long)]
-    enable_readers: bool,
+    no_write_protection: bool,
 }
 
 fn print_greeting(shell: &str, controller: &Controller) {
@@ -90,7 +89,7 @@ async fn start(args: Args) -> Result<()> {
     });
 
     let runner = Runner::Shell(shell.clone());
-    let mut controller = Controller::new(&args.server, &name, runner, args.enable_readers).await?;
+    let mut controller = Controller::new(&args.server, &name, runner, !args.no_write_protection).await?;
     if args.quiet {
         if let Some(write_url) = controller.write_url() {
             println!("{}", write_url);
