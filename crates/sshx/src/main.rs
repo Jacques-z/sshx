@@ -49,20 +49,31 @@ fn print_greeting(shell: &str, controller: &Controller) {
         Some(version) => format!("v{version}"),
         None => String::from("[dev]"),
     };
-    if let Some(write_url) = controller.write_url() {
+    if let Some(write_password) = controller.write_password() {
         println!(
             r#"
   {sshx} {version}
 
+  {arr}  link:           {link}
   {arr}  Read-only link: {link_v}
   {arr}  Writable link:  {link_e}
   {arr}  Shell:          {shell_v}
+
+  {eye}  View:           {encryption_key}
+  {key}  Key:            {write_password}
 "#,
             sshx = Green.bold().paint("sshx"),
             version = Green.paint(&version_str),
             arr = Green.paint("➜"),
+            eye = "👀",
+            key = "🔑",
+            link = Cyan.underline().paint(controller.link()),
             link_v = Cyan.underline().paint(controller.url()),
-            link_e = Cyan.underline().paint(write_url),
+            encryption_key = Cyan.underline().paint(controller.encryption_key()),
+            write_password = Cyan.underline().paint(write_password),
+            link_e = Cyan
+                .underline()
+                .paint(controller.url().to_owned() + "," + write_password),
             shell_v = Fixed(8).paint(shell),
         );
     } else {
@@ -70,13 +81,19 @@ fn print_greeting(shell: &str, controller: &Controller) {
             r#"
   {sshx} {version}
 
-  {arr}  Link:  {link_v}
-  {arr}  Shell: {shell_v}
+  {arr}  Link:            {link}
+  {arr}  Link with auth:  {link_v}
+  {arr}  Shell:           {shell_v}
+
+  {key}  Key:             {encryption_key}
 "#,
             sshx = Green.bold().paint("sshx"),
             version = Green.paint(&version_str),
             arr = Green.paint("➜"),
+            key = "🔑",
+            link = Cyan.underline().paint(controller.link()),
             link_v = Cyan.underline().paint(controller.url()),
+            encryption_key = Cyan.underline().paint(controller.encryption_key()),
             shell_v = Fixed(8).paint(shell),
         );
     }
@@ -112,8 +129,8 @@ async fn start(args: Args) -> Result<()> {
     )
     .await?;
     if args.quiet {
-        if let Some(write_url) = controller.write_url() {
-            println!("{}", write_url);
+        if let Some(write_password) = controller.write_password() {
+            println!("{}", controller.url().to_owned() + "," + write_password);
         } else {
             println!("{}", controller.url());
         }
