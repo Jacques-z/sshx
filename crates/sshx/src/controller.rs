@@ -50,11 +50,16 @@ impl Controller {
     pub async fn new(
         origin: &str,
         name: &str,
+        encryption_key: &str,
         runner: Runner,
         enable_readers: bool,
     ) -> Result<Self> {
         debug!(%origin, "connecting to server");
-        let encryption_key = rand_alphanumeric(14); // 83.3 bits of entropy
+        let encryption_key = if encryption_key.is_empty() {
+            rand_alphanumeric(14)
+        } else {
+            encryption_key.to_string()
+        }; // 83.3 bits of entropy
 
         let kdf_task = {
             let encryption_key = encryption_key.clone();
