@@ -34,8 +34,9 @@ pub struct Controller {
 
     name: String,
     token: String,
+    link: String,
     url: String,
-    write_url: Option<String>,
+    write_password: Option<String>,
 
     /// Channels with backpressure routing messages to each shell task.
     shells_tx: HashMap<Sid, mpsc::Sender<ShellData>>,
@@ -57,10 +58,10 @@ impl Controller {
     ) -> Result<Self> {
         debug!(%origin, "connecting to server");
         let encryption_key = if encryption_key.is_empty() {
-            rand_alphanumeric(14)
+            rand_alphanumeric(14) // 83.3 bits of entropy
         } else {
-            encryption_key.to_string()
-        }; // 83.3 bits of entropy
+            encryption_key.into()
+        };
 
         let kdf_task = {
             let encryption_key = encryption_key.clone();
@@ -97,13 +98,8 @@ impl Controller {
             write_password_hash,
         };
         let mut resp = client.open(req).await?.into_inner();
+        let link = resp.url.clone();
         resp.url = resp.url + "#" + &encryption_key;
-
-        let write_url = if let Some(write_password) = write_password {
-            Some(resp.url.clone() + "," + &write_password)
-        } else {
-            None
-        };
 
         let (output_tx, output_rx) = mpsc::channel(64);
         Ok(Self {
@@ -113,8 +109,9 @@ impl Controller {
             encryption_key,
             name: resp.name,
             token: resp.token,
+            link,
             url: resp.url,
-            write_url,
+            write_password,
             shells_tx: HashMap::new(),
             output_tx,
             output_rx,
@@ -135,14 +132,19 @@ impl Controller {
         &self.name
     }
 
+    /// Returns the URL of the session without auth.
+    pub fn link(&self) -> &str {
+        &self.link
+    }
+
     /// Returns the URL of the session.
     pub fn url(&self) -> &str {
         &self.url
     }
 
-    /// Returns the write URL of the session, if it exists.
-    pub fn write_url(&self) -> Option<&str> {
-        self.write_url.as_deref()
+    /// Returns the write token of the session, if it exists.
+    pub fn write_password(&self) -> Option<&str> {
+        self.write_password.as_deref()
     }
 
     /// Returns the encryption key for this session, hidden from the server.
