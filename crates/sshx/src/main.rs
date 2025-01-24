@@ -35,6 +35,10 @@ struct Args {
     /// editors.
     #[clap(long)]
     enable_readers: bool,
+
+    /// Write permission key
+    #[clap(long, default_value = "")]
+    write_password: String,
 }
 
 fn print_greeting(shell: &str, controller: &Controller) {
@@ -100,6 +104,7 @@ async fn start(args: Args) -> Result<()> {
         &args.encryption_key,
         runner,
         args.enable_readers,
+        &args.write_password,
     )
     .await?;
     if args.quiet {
