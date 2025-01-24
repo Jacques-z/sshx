@@ -31,6 +31,10 @@ struct Args {
     #[clap(long, default_value = "")]
     addr: String,
 
+    /// Encryption key
+    #[clap(long, default_value = "")]
+    encryption_key: String,
+
     /// Enable everyone to run arbitrary commands.
     #[clap(long)]
     no_write_protection: bool,
@@ -97,6 +101,7 @@ async fn start(args: Args) -> Result<()> {
         &args.server,
         &name,
         &args.addr,
+        &args.encryption_key,
         runner,
         !args.no_write_protection,
     )
