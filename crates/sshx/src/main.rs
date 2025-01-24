@@ -38,6 +38,10 @@ struct Args {
     /// Enable everyone to run arbitrary commands.
     #[clap(long)]
     no_write_protection: bool,
+
+    /// Write permission key
+    #[clap(long, default_value = "")]
+    write_password: String,
 }
 
 fn print_greeting(shell: &str, controller: &Controller) {
@@ -104,6 +108,7 @@ async fn start(args: Args) -> Result<()> {
         &args.encryption_key,
         runner,
         !args.no_write_protection,
+        &args.write_password,
     )
     .await?;
     if args.quiet {
