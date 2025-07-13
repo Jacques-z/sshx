@@ -1,6 +1,6 @@
 use std::process::ExitCode;
 
-use ansi_term::Color::{Cyan, Fixed, Green};
+use ansi_term::Color::{Cyan, Fixed, Green, Red};
 use anyhow::Result;
 use clap::Parser;
 use sshx::{controller::Controller, runner::Runner, terminal::get_default_shell};
@@ -54,10 +54,11 @@ fn print_greeting(shell: &str, controller: &Controller) {
             r#"
   {sshx} {version}
 
-  {arr}  link:           {link}
-  {arr}  Read-only link: {link_v}
-  {arr}  Writable link:  {link_e}
-  {arr}  Shell:          {shell_v}
+  {arr}  link:            {link}
+  {arr}  Read-only link:  {link_v}
+  {arr}  Safe write link: {link_s}
+  {arr}  Writable link:   {link_e} ⚠️ INSECURE
+  {arr}  Shell:           {shell_v}
 
   {eye}  View:           {encryption_key}
   {key}  Key:            {write_password}
@@ -69,9 +70,12 @@ fn print_greeting(shell: &str, controller: &Controller) {
             key = "🔑",
             link = Cyan.underline().paint(controller.link()),
             link_v = Cyan.underline().paint(controller.url()),
+            link_s = Cyan
+                .underline()
+                .paint(controller.url().to_owned() + ",manually"),
             encryption_key = Cyan.underline().paint(controller.encryption_key()),
             write_password = Cyan.underline().paint(write_password),
-            link_e = Cyan
+            link_e = Red
                 .underline()
                 .paint(controller.url().to_owned() + "," + write_password),
             shell_v = Fixed(8).paint(shell),
