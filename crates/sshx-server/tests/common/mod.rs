@@ -153,7 +153,7 @@ impl ClientSocket {
         let msg = self.inner.next().await.unwrap().unwrap();
         match msg {
             Message::Close(Some(frame)) => assert!(frame.code == code.into()),
-            _ => panic!("unexpected non-close message over WebSocket: {:?}", msg),
+            _ => panic!("unexpected non-close message over WebSocket: {msg:?}"),
         }
     }
 

@@ -98,7 +98,7 @@ async fn start(args: Args) -> Result<()> {
         Controller::new(&args.server, &name, &args.addr, runner, args.enable_readers).await?;
     if args.quiet {
         if let Some(write_url) = controller.write_url() {
-            println!("{}", write_url);
+            println!("{write_url}");
         } else {
             println!("{}", controller.url());
         }
