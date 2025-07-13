@@ -195,19 +195,19 @@ async fn handle_update(tx: &ServerTx, session: &Session, update: ClientUpdate) -
         }
         Some(ClientMessage::Data(data)) => {
             if let Err(err) = session.add_data(Sid(data.id), data.data, data.seq) {
-                return send_err(tx, format!("add data: {:?}", err)).await;
+                return send_err(tx, format!("add data: {err:?}")).await;
             }
         }
         Some(ClientMessage::CreatedShell(new_shell)) => {
             let id = Sid(new_shell.id);
             let center = (new_shell.x, new_shell.y);
             if let Err(err) = session.add_shell(id, center) {
-                return send_err(tx, format!("add shell: {:?}", err)).await;
+                return send_err(tx, format!("add shell: {err:?}")).await;
             }
         }
         Some(ClientMessage::ClosedShell(id)) => {
             if let Err(err) = session.close_shell(Sid(id)) {
-                return send_err(tx, format!("close shell: {:?}", err)).await;
+                return send_err(tx, format!("close shell: {err:?}")).await;
             }
         }
         Some(ClientMessage::Pong(ts)) => {
