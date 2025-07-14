@@ -1,5 +1,37 @@
 # sshx
 
+## Why fork
+
+The original version of `sshx` has a severe security issue: It writes and write
+key in the URL, which enables anyone sees it to run shell commands on your
+computer, especially, _the server_.
+
+I wasn't sure about whether it's simply that the author is too lazy to prevent
+it or a backdoor until I found him blacklisted me. This is what I did:
+
+- Created 3 PRs:
+  - Added a feature of
+    [setting custom enc key and write key](https://github.com/ekzhang/sshx/pull/134).
+  - Added a feature of
+    [requesting custom room name](https://github.com/ekzhang/sshx/pull/135).
+  - Added a feature of
+    [fill in the write key in frontend prompt](https://github.com/ekzhang/sshx/pull/136)
+- Pushed a commit
+  [remove back door](https://github.com/Jacques-z/sshx/commit/d1ca797f85a917ef93ab67775ab8985b438f29a5)
+  to my personal fork
+
+I guess he behaved this rude because my patch will turn his URL-monitoring
+middleware into trash, given that he is incredibly against self-hosting.
+
+So I fix all security concerns I know and try to give instructions of
+self-hosting. But you should still be cautious about the code and welcome to
+tell me or fix bugs you find. I may create a docker image for self-hosting one
+day, or it would be wonderful if someone could do it.
+
+Lastly, please star and share this repo to fight against malware. Thanks💖.
+
+## What is
+
 A secure web-based, collaborative terminal.
 
 ![](https://i.imgur.com/Q3qKAHW.png)
@@ -18,31 +50,10 @@ Visit [sshx.io](https://sshx.io) to learn more.
 
 ## Installation
 
-Just run this command to get the `sshx` binary for your platform.
+Currently I'm afraid you have to compile this by yourself. Detailed info of
+compiling will be given below.
 
-```shell
-curl -sSf https://sshx.io/get | sh
-```
-
-Supports Linux and MacOS on x86_64 and ARM64 architectures, as well as embedded
-ARMv6 and ARMv7-A systems. The Linux binaries are statically linked.
-
-For Windows, there are binaries for x86_64, x86, and ARM64, linked to MSVC for
-maximum compatibility.
-
-If you just want to try it out without installing, use:
-
-```shell
-curl -sSf https://sshx.io/get | sh -s run
-```
-
-Inspect the script for additional options.
-
-You can also install it with [Homebrew](https://brew.sh/) on macOS.
-
-```shell
-brew install sshx
-```
+Should have had an action to build.
 
 ### CI/CD
 
@@ -80,42 +91,28 @@ Here's how to work on the project, if you want to contribute.
 ### Building from source
 
 To build the latest version of the client from source, clone this repository and
-run, with [Rust](https://rust-lang.com/) installed:
+run, with [Rust](https://rust-lang.com/) (and maybe `protobuf` or others)
+installed:
 
-```shell
-cargo install --path crates/sshx
-```
-
-This will compile the `sshx` binary and place it in your `~/.cargo/bin` folder.
-
-### Workflow
-
-First, start service containers for development.
-
-```shell
-docker compose up -d
-```
-
-Install [Rust 1.70+](https://www.rust-lang.org/),
-[Node v18](https://nodejs.org/), [NPM v9](https://www.npmjs.com/), and
-[mprocs](https://github.com/pvolok/mprocs). Then, run
+Firstly, start a server:
 
 ```shell
 npm install
-mprocs
+npm run build
+cargo run --bin sshx-server
 ```
 
-This will compile and start the server, an instance of the client, and the web
-frontend in parallel on your machine.
+Then client:
+
+```shell
+cargo run --bin sshx --server http://127.0.0.1:8051
+```
 
 ## Deployment
 
-I host the application servers on [Fly.io](https://fly.io/) and with
-[Redis Cloud](https://redis.com/).
+You can easily self host the backend by running `cargo build -r`, run the
+executable `target/release/sshx-server`, and bind it to a domain name or open
+corresponding port.
 
-Self-hosted deployments are not supported at the moment. If you want to deploy
-sshx, you'll need to properly implement HTTP/TCP reverse proxies, gRPC
-forwarding, TLS termination, private mesh networking, and graceful shutdown.
-
-Please do not run the development commands in a public setting, as this is
-insecure.
+If you don't have any domain name or public IP, I recommend
+[zrok](https://zrok.io/).
