@@ -5,7 +5,7 @@ authors.workspace = true
 license.workspace = true
 description.workspace = true
 repository.workspace = true
-documentation.workspace = true
+# documentation.workspace = true
 keywords.workspace = true
 edition = "2021"
 
@@ -27,7 +27,10 @@ http = "1.2.0"
 parking_lot = "0.12.1"
 prost.workspace = true
 rand.workspace = true
-redis = { version = "0.27.6", features = ["tokio-rustls-comp", "tls-rustls-webpki-roots"] }
+redis = { version = "0.27.6", features = [
+  "tokio-rustls-comp",
+  "tls-rustls-webpki-roots",
+] }
 serde.workspace = true
 sha2 = "0.10.7"
 sshx-core.workspace = true
@@ -44,5 +47,7 @@ tracing-subscriber.workspace = true
 zstd = "0.12.4"
 
 [dev-dependencies]
-reqwest = { version = "0.12.12", default-features = false, features = ["rustls-tls"] }
+reqwest = { version = "0.12.12", default-features = false, features = [
+  "rustls-tls",
+] }
 sshx = { path = "../sshx" }

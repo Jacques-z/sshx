@@ -4,11 +4,13 @@ resolver = "2"
 
 [workspace.package]
 version = "0.4.1"
-authors = ["Eric Zhang <ekzhang1@gmail.com>"]
-license = "MIT"
+authors = [
+  "Eric Zhang <ekzhang1@gmail.com>",
+  "Jacques-z <89645196+Jacques-z@users.noreply.github.com>",
+]
+license = "AGPL"
 description = "A secure web-based, collaborative terminal."
-repository = "https://github.com/ekzhang/sshx"
-documentation = "https://sshx.io"
+repository = "https://github.com/jacques-z/sshx"
 keywords = ["ssh", "share", "terminal", "collaborative"]
 
 [workspace.dependencies]
