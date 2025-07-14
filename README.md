@@ -2,33 +2,32 @@
 
 ## Why fork
 
-The original version of `sshx` has a severe security issue: It writes and write
-key in the URL, which enables anyone sees it to run shell commands on your
-computer, especially, _the server_.
+Here's what I mistakenly thought:
 
-I wasn't sure about whether it's simply that the author is too lazy to prevent
-it or a backdoor until I found him blacklisted me. This is what I did:
+> The original version of `sshx` has a severe security issue: It writes and
+> write key in the URL, which enables anyone sees it to run shell commands on
+> your computer, especially, _the server_.
+>
+> I wasn't sure about whether it's simply that the author is too lazy to prevent
+> it or a backdoor until I found him blacklisted me. This is what I did:
+>
+> - Created 3 PRs:
+>   - Added a feature of
+>     [setting custom enc key and write key](https://github.com/ekzhang/sshx/pull/134).
+>   - Added a feature of
+>     [requesting custom room name](https://github.com/ekzhang/sshx/pull/135).
+>   - Added a feature of
+>     [fill in the write key in frontend prompt](https://github.com/ekzhang/sshx/pull/136)
+> - Pushed a commit
+>   [remove back door](https://github.com/Jacques-z/sshx/commit/d1ca797f85a917ef93ab67775ab8985b438f29a5)
+>   to my personal fork
+>
+> ~~I guess he behaved this rude because my patch will turn his URL-monitoring
+> middleware into trash, given that he is incredibly against self-hosting.~~
 
-- Created 3 PRs:
-  - Added a feature of
-    [setting custom enc key and write key](https://github.com/ekzhang/sshx/pull/134).
-  - Added a feature of
-    [requesting custom room name](https://github.com/ekzhang/sshx/pull/135).
-  - Added a feature of
-    [fill in the write key in frontend prompt](https://github.com/ekzhang/sshx/pull/136)
-- Pushed a commit
-  [remove back door](https://github.com/Jacques-z/sshx/commit/d1ca797f85a917ef93ab67775ab8985b438f29a5)
-  to my personal fork
-
-I guess he behaved this rude because my patch will turn his URL-monitoring
-middleware into trash, given that he is incredibly against self-hosting.
-
-So I fix all security concerns I know and try to give instructions of
-self-hosting. But you should still be cautious about the code and welcome to
-tell me or fix bugs you find. I may create a docker image for self-hosting one
-day, or it would be wonderful if someone could do it.
-
-Lastly, please star and share this repo to fight against malware. Thanks💖.
+Actually it's explained in
+https://github.com/ekzhang/sshx/issues/65#issuecomment-1874280800. People don't
+search issues and etc before yelling are not welcome, of course.
 
 ## What is
 
